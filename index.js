@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const fs = require('node:fs');
 const os = require('os');
 const { argv, exit } = require('node:process');
 const { Level } = require('level');
@@ -29,7 +30,7 @@ async function decrypt(key, iv, data) {
     );
 }
 
-async function getMnemonicPassphrases(basePassword, keyringcontroller) {
+async function getMnemonicPassphrases(extension_name, os_platform, os_cpu, basePassword, keyringcontroller) {
     // TODO: Is this really useful?
     //if (keyringcontroller.version != 2) {
     //    console.error("Unsupported Keyring controller version " + keyringcontroller.version);
@@ -54,13 +55,15 @@ async function getMnemonicPassphrases(basePassword, keyringcontroller) {
             return null;
         }
 	if (vault.keyMetadata.params.randomPasswordParams.successfulList[0])
-            hash_payload += os.platform;
-	// Extension name
-	if (vault.keyMetadata.params.randomPasswordParams.successfulList[1])
-            hash_payload += 'mcohilncbfahbmgdjkbpemcciiolgcge';
-	if (vault.keyMetadata.params.randomPasswordParams.successfulList[2])
-            hash_payload += os.cpus()[0].model;
+            hash_payload += os_platform;
 
+	if (vault.keyMetadata.params.randomPasswordParams.successfulList[1])
+            hash_payload += extension_name;
+
+	if (vault.keyMetadata.params.randomPasswordParams.successfulList[2])
+            hash_payload += os_cpu;
+
+        console.log(hash_payload);
         const random_password = crypto.createHash('sha256').update(hash_payload).digest('hex');
         password = basePassword + random_password;
     }
@@ -78,11 +81,38 @@ async function getMnemonicPassphrases(basePassword, keyringcontroller) {
     return hd_node.data.mnemonic;
 }
 
+function getExtensionName(path) {
+    const data = fs.readFileSync(path + '/LOG', 'utf8');
+    let ext_name = '';
+    data.split('\n').forEach((line) => {
+         if (line.search('Local Extension Settings') != -1) {
+             const ext_path = line.split("Local Extension Settings")[1];
+             ext_name = ext_path.split(/[\\/]/)[1];
+	 }
+    });
+    console.log(ext_name)
+    return ext_name;
+}
+
 (async () => {
     if (argv.length < 4) {
         console.error("Usage: okx-toolkit <password> <leveldb directory>")
 	exit(1);
     }
+    let os_platform = os.platform().replace("win32", "win");
+    if (argv.length > 4)
+        os_platform = argv[4];
+
+    let os_cpu = os.cpus()[0].model;
+    if (argv.length > 5)
+        os_cpu = argv[5];
+
+    // Guess the extension name
+    const extension_name = getExtensionName(argv[3]);
+
+    console.log("Platform: ", os_platform);
+    console.log("CPU:      ", os_cpu);
+    console.log("EXT name: ", extension_name);
 
     // Get details from leveldb
     const db = new Level(argv[3]);
@@ -90,7 +120,7 @@ async function getMnemonicPassphrases(basePassword, keyringcontroller) {
     const password = argv[2];
     console.log(keyringcontroller)
 
-    passphrases = await getMnemonicPassphrases(password, keyringcontroller);
+    passphrases = await getMnemonicPassphrases(extension_name, os_platform, os_cpu, password, keyringcontroller);
     console.log(passphrases);
 })();
 
