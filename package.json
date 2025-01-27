@@ -1,0 +1,15 @@
+{
+  "name": "okx-toolkit",
+  "version": "0.0.1",
+  "description": "A toolkit to deal with OKX wallets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Davide Berardi <berardi.dav@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "level": "^9.0.0"
+  }
+}
