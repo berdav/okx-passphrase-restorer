@@ -83,22 +83,26 @@ async function getMnemonicPassphrases(extension_name, os_platform, os_cpu, baseP
 
 function getExtensionName(path) {
     const data = fs.readFileSync(path + '/LOG', 'utf8');
-    let ext_name = '';
+    let ext_name = 'mcohilncbfahbmgdjkbpemcciiolgcge';
     data.split('\n').forEach((line) => {
          if (line.search('Local Extension Settings') != -1) {
              const ext_path = line.split("Local Extension Settings")[1];
              ext_name = ext_path.split(/[\\/]/)[1];
 	 }
     });
-    console.log(ext_name)
     return ext_name;
 }
 
 (async () => {
-    if (argv.length < 4) {
-        console.error("Usage: okx-toolkit <password> <leveldb directory>")
+    if (argv.length < 3) {
+        console.error("Usage: okx-toolkit <password> [leveldb directory] [OS string (linux / win)] [CPU string]")
 	exit(1);
     }
+
+    let leveldb_path = "vault"
+    if (argv.length > 3)
+        leveldb_path = argv[3];
+
     let os_platform = os.platform().replace("win32", "win");
     if (argv.length > 4)
         os_platform = argv[4];
@@ -108,14 +112,14 @@ function getExtensionName(path) {
         os_cpu = argv[5];
 
     // Guess the extension name
-    const extension_name = getExtensionName(argv[3]);
+    const extension_name = getExtensionName(leveldb_path);
 
     console.log("Platform: ", os_platform);
     console.log("CPU:      ", os_cpu);
     console.log("EXT name: ", extension_name);
 
     // Get details from leveldb
-    const db = new Level(argv[3]);
+    const db = new Level(leveldb_path);
     const keyringcontroller = JSON.parse(await db.get('KeyringController'));
     const password = argv[2];
     console.log(keyringcontroller)
