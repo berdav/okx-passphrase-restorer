@@ -3,7 +3,7 @@
 Retrieve 12 words passphrase from a backup of your okx wallet and the
 password.
 
-TL;DR [here]() you can find a reference video.
+TL;DR [here](https://www.youtube.com/watch?v=oemKAqQegB0) you can find a reference video.
 
 ## It worked! I want to thank you
 Please, make a donation to berardi.dav@gmail.com on PayPal.
