@@ -12,6 +12,7 @@ Please, make a donation to berardi.dav@gmail.com on PayPal.
 
 When you create an OKX wallet you shall always backup your 12 words
 passphrase, which is of this format:
+
 ![12 word passphrase](img/passphrase.jpg)
 
 There are some cases in which you forget this passphrase, and you're
