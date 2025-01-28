@@ -7,14 +7,14 @@ const { Level } = require('level');
 const crypto = require('crypto');
 const subtleCrypto = crypto.subtle;
 
-async function deriveKey(password, salt, iterations, keyLength = 32) {
+async function deriveKey(password, salt, iterations, hash, keyLength = 32) {
     const encoder = new TextEncoder();
     const passwordBuffer = encoder.encode(password);
 
     const passwordKey = await subtleCrypto.importKey( "raw", passwordBuffer, { name: "PBKDF2" }, false, ["deriveBits"]);
 
     const derivedBits = await subtleCrypto.deriveBits(
-        { name: "PBKDF2", salt: salt, iterations: iterations, hash: "SHA-256", },
+        { name: "PBKDF2", salt: salt, iterations: iterations, hash: hash, },
         passwordKey, keyLength << 3
     );
 
@@ -74,7 +74,7 @@ async function getMnemonicPassphrases(extension_name, os_platform, os_cpu, baseP
 
     const keyLength = 32;
 
-    const derivedKey = await deriveKey(password, salt, iterations, keyLength);
+    const derivedKey = await deriveKey(password, salt, iterations, hash, keyLength);
     const decrypted = await decrypt(derivedKey, iv, data);
     const td = new TextDecoder('utf-8');
     hd_node = JSON.parse(td.decode(decrypted))[0];
