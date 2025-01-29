@@ -11,9 +11,7 @@ If you want to say thanks you can use the following Paypal link or Cryptocurrenc
 
 [![paypal](https://github.com/Ximi1970/Donate/blob/master/paypal_btn_donateCC_LG_1.gif)](https://www.paypal.com/donate/?business=3D84NRYJNR4TQ&no_recurring=0&item_name=Thank+you+for+using+my+software%21&currency_code=EUR)
 
-ETH Address: `bc1qwnfhz2gn2camurx4p9n8p3rydp2k25ahukwk7a`
-
-BTC Address: `0xC1FA61ee2fFE2ec23c9aB652C7d2b490454629d3`
+ETH Address: `0x9Ed7E2e0451D489c8A526b2Ae86c13a1453A0E39`
 
 ## Why?
 
